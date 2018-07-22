@@ -1,0 +1,149 @@
+ <div class="well well-track">
+            
+            <div>
+                <h3>Track's Genres</h3>
+            </div>
+            <div><hr></div>
+
+            <div class="panel-body">
+             
+               <div class="form-inline form-track">
+                    <div class="form-group pull-right">
+                       <!--  <a role="button" type="button" class="btn btn-danger">
+                            <i class="fa fa-trash-o fa-icon"></i></a>&nbsp;  -->
+                        <a role="button" type="button" class="btn btn-danger" (click)="showGenresModal()">
+                            <i class="fa fa-plus fa-icon"></i></a>
+                    </div>
+                </div>
+
+
+                <div class=" table-responsive">
+                    <table class="table">
+                        <thead class="thead-bg">
+                            <tr>
+                               
+                                <th>Name</th>
+                                <th style="text-align:right;">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody *ngIf="genresTracks && genresTracks.length>0">
+                            <tr *ngFor="let genresTrack of genresTracks | paginate: { itemsPerPage: 5, currentPage: p }">
+                                          
+                                <td>{{genresTrack.name}}</td>
+                                <td style="text-align:right;">
+                                    <ul>
+                                        <li>
+                                            <button class="btn action-btn" (click)="editGenresModal(genresTrack)">
+                                                <i class="fa fa-pencil-square-o icon-color"></i>
+                                            </button>
+                                        </li>&nbsp;
+                                        <li>
+                                            <button class="btn action-btn" (click)="confirmDelete(genresTrack)">
+                                                <i class="fa fa-trash-o icon-color"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                         <span class="no-error" *ngIf="genresTracks && genresTracks.length == 0">No Items Available!</span>
+                    </table>
+                     
+                      <div *ngIf="(genresTracks.length)>5" class="product-pagination-row">
+                  <div>
+                    <pagination-controls previousLabel=""
+                    nextLabel="" (pageChange)="p = $event"></pagination-controls>
+                  </div>
+                </div>
+
+
+                </div>
+             </div>
+          </div>
+
+
+<!-- add Track's Genres modal -->
+<div class="modal fade" id="addGenresModal" role="dialog">
+    <div class="modal-dialog">
+        <form novalidate #genres="ngForm" (ngSubmit)="addGenres(genres)">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Track's Genres </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Title *</label>
+                                <input type="text" class="form-control" [(ngModel)]="genres.name" #name = "ngModel" name="name" required placeholder="Name">
+                                <div class="alert alert-danger" *ngIf="name.errors?.required && name.touched">This field is
+                                        required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" [disabled]="!(genres.name)">SAVE</button>
+                    <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- edit Track's Genres modal -->
+<div class="modal fade" id="editGenresModal" role="dialog">
+    <div class="modal-dialog">
+        <form novalidate #gen="ngForm" (ngSubmit)="editGenres(genData)">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Track's Genres </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Name *</label>
+                                <input type="text" class="form-control" [(ngModel)]="genData.name" #name = "ngModel" name="name" required placeholder="Name">
+                                <div class="alert alert-danger" *ngIf="name.errors?.required && name.touched">This field is
+                                        required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" [disabled]="!(genData.name)">SAVE</button>
+                    <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+ <!-- deleted confirm Modal -->
+  <div class="modal fade" id="confirmModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content confirm-m" style="margin-top: 28%">
+        <div class="modal-body">
+          <p style="text-align: center">Are you sure to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-d" data-dismiss="modal" (click)="deleteGenres()">OK</button>
+            <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>

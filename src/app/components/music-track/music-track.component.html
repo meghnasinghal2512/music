@@ -1,0 +1,256 @@
+
+<div id="body">
+  <div class="container container-track">
+  	<div class="row">
+
+  		<div class="col-sm-6 col-sm-padding">
+        
+          <div class="well well-track">
+          	
+	        <div>
+	        	<h3>Music Track</h3>
+	        </div>
+	        <div><hr></div>
+
+	        <div class="panel-body">
+         
+	           <div class="form-inline form-track">
+		            <!-- <div class="form-group ">
+		                <label for="sel1">Search</label>
+		            </div> -->
+		            <div class="form-group pull-right">
+		               <!--  <a role="button" type="button" class="btn btn-danger">
+		                    <i class="fa fa-trash-o fa-icon"></i></a>&nbsp;  -->
+		                <a role="button" type="button" class="btn btn-danger" (click)="showTrackModal()">
+		                    <i class="fa fa-plus fa-icon"></i></a>
+		            </div>
+	            </div>
+
+
+                <div class="table-margin table-responsive">
+		            <table class="table">
+		                <thead class="thead-bg">
+		                    <tr>
+		                        <th>Name</th>
+		                        <th>Rating</th>
+		                        <th>Action</th>
+		                    </tr>
+		                </thead>
+
+		                <tbody *ngIf="tracks && tracks.length>0">
+                        <tr *ngFor="let track of tracks | paginate: { itemsPerPage: 5, currentPage: p }">
+		    
+		                             
+		                        <td>{{track.track_name}} [{{track.name}}]</td>            
+		                        <td>
+                                 <div [ngClass]="track.rating">
+                                  <i class="fa fa-star"></i>
+                                  <i class="fa fa-star"></i>
+                                  <i class="fa fa-star"></i>
+                                  <i class="fa fa-star"></i>
+                                  <i class="fa fa-star"></i>
+                                  </div>
+                            </td>
+		                        <td>
+		                            <ul>
+		                                <!-- <li>
+		                                    <button class="btn action-btn" (click)="editTrackModal(track)">
+		                                        <i class="fa fa-pencil-square-o icon-color"></i>
+		                                    </button>
+		                                </li>&nbsp; -->
+		                                <li>
+		                                    <button class="btn action-btn" (click)="confirmDeleteTrack(track)">
+		                                        <i class="fa fa-trash-o icon-color"></i>
+		                                    </button>
+		                                </li>
+		                            </ul>
+		                        </td>
+		                    </tr>
+		                </tbody>
+                     <span class="no-error" *ngIf="tracks && tracks.length == 0">No Items Available!</span>
+		            </table>
+
+                <div *ngIf="(tracks.length)>5" class="product-pagination-row">
+                  <div>
+                    <pagination-controls previousLabel=""
+                    nextLabel="" (pageChange)="p = $event"></pagination-controls>
+                  </div>
+                </div>
+
+
+
+                </div>
+             </div>
+          </div>
+  	    </div>	
+
+  	    <div class="col-sm-6 col-sm-padding">
+          <app-genres></app-genres>
+  	    </div>	
+  	</div>
+  </div>
+</div>
+
+
+<!-- add track modal -->
+<div class="modal fade" id="addTrackModal" role="dialog">
+    <div class="modal-dialog">
+        <form novalidate #trackInfo="ngForm" (ngSubmit)="addTrack(trackInfo)">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add Track </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Name *</label>
+                                <input type="text" class="form-control" [(ngModel)]="trackInfo.name" #name = "ngModel" name="name" required placeholder="Name">
+                                <div class="alert alert-danger" *ngIf="name.errors?.required && name.touched">This field is
+                                        required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="sel1">Select Genres of Product</label>
+                                <select class="form-control" name="genres_id" [(ngModel)]="selectedGenres">
+                                     <option *ngFor="let genresTrack of genresTracks" [value]="genresTrack.id"> {{genresTrack.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                     <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Rate this track</label><br>
+                                <fieldset class="rating ">
+                                  <input type="radio" id="star5" name="rating" [(ngModel)] = "trackInfo.rating"  value="5" />
+                                  <label class="full" for="star5" title="Awesome - 5 stars"></label>
+
+                                  <input type="radio" id="star4" name="rating" [(ngModel)] = "trackInfo.rating"   value="4" />
+                                  <label class="full" for="star4" title="Pretty good - 4 stars"></label>
+
+                                  <input type="radio" id="star3" name="rating" [(ngModel)] = "trackInfo.rating"  value="3" />
+                                  <label class="full" for="star3" title="Meh - 3 stars"></label>
+
+                                  <input type="radio" id="star2" name="rating" [(ngModel)] = "trackInfo.rating"  value="2" />
+                                  <label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+
+                                  <input type="radio" id="star1" name="rating" [(ngModel)] = "trackInfo.rating"  value="1" />
+                                  <label class="full" for="star1" title="Sucks big time - 1 star"></label>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" [disabled]="!(trackInfo.name)">SAVE</button>
+                    <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- edit track modal -->
+<!-- <div class="modal fade" id="editTrackModal" role="dialog">
+    <div class="modal-dialog">
+        <form novalidate #track="ngForm" (ngSubmit)="editTrack(trackData)"> -->
+
+            <!-- Modal content-->
+           <!--  <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Track </h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Name *</label>
+                                <input type="text" class="form-control" [(ngModel)]="trackData.track_name" #name = "ngModel" name="name" required placeholder="Name">
+                                <div class="alert alert-danger" *ngIf="name.errors?.required && name.touched">This field is
+                                        required
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="sel1">Select Genres of Product</label>
+                                <select class="form-control" name="genres_id" [(ngModel)]="trackData.name">
+                                     <option *ngFor="let genresTrack of genresTracks" [value]="genresTrack.id"> {{genresTrack.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                    </div>
+                     <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="label-m" for="title">Rate this track</label><br>
+                                <fieldset class="rating ">
+                                  <input type="radio" id="star5" name="rating" [(ngModel)] = "trackData.star"  value="5" />
+                                  <label class="full" for="star5" title="Awesome - 5 stars"></label>
+
+                                  <input type="radio" id="star4" name="rating" [(ngModel)] = "trackData.star"   value="4" />
+                                  <label class="full" for="star4" title="Pretty good - 4 stars"></label>
+
+                                  <input type="radio" id="star3" name="rating" [(ngModel)] = "trackData.star"  value="3" />
+                                  <label class="full" for="star3" title="Meh - 3 stars"></label>
+
+                                  <input type="radio" id="star2" name="rating" [(ngModel)] = "trackData.star"  value="2" />
+                                  <label class="full" for="star2" title="Kinda bad - 2 stars"></label>
+
+                                  <input type="radio" id="star1" name="rating" [(ngModel)] = "trackData.star"  value="1" />
+                                  <label class="full" for="star1" title="Sucks big time - 1 star"></label>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger" [disabled]="!(trackData.name)">SAVE</button>
+                    <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+ -->
+
+
+
+
+ <!-- deleted confirm Modal -->
+  <div class="modal fade" id="confirmTrackModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content confirm-m" style="margin-top: 28%">
+        <div class="modal-body">
+          <p style="text-align: center">Are you sure to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-d" data-dismiss="modal" (click)="deleteTrack()">OK</button>
+            <button type="button" class="btn btn-default btn-d" data-dismiss="modal">CANCEL</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
